@@ -1,5 +1,7 @@
 # Wasm
 
+https://developer.mozilla.org/ja/docs/WebAssembly/Guides/Rust_to_Wasm
+
 ## --target web
 
 ```shell
