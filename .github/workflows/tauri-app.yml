@@ -6,6 +6,10 @@ on:
       - .github/workflows/tauri-app.yml
       - tauri-app/**
 
+defaults:
+  run:
+    working-directory: tauri-app
+
 jobs:
   build:
     runs-on: ubuntu-latest
