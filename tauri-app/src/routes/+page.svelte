@@ -4,10 +4,24 @@
   let name = $state("");
   let greetMsg = $state("");
 
+  let nsec = $state("");
+  let saveMsg = $state("");
+
   async function greet(event: Event) {
     event.preventDefault();
     // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
     greetMsg = await invoke("greet", { name });
+  }
+
+  async function save(event: Event) {
+    event.preventDefault();
+    try {
+      await invoke("save_nsec", { nsec });
+      nsec = "";
+      saveMsg = "Saved successfully!";
+    } catch (e) {
+      saveMsg = `Error: ${e}`;
+    }
   }
 </script>
 
@@ -32,6 +46,16 @@
     <button type="submit">Greet</button>
   </form>
   <p>{greetMsg}</p>
+
+  <form class="row" onsubmit={save}>
+    <input
+      id="seckey-input"
+      placeholder="Enter a seckey..."
+      bind:value={nsec}
+    />
+    <button type="submit">Save</button>
+  </form>
+  <p>{saveMsg}</p>
 </main>
 
 <style>

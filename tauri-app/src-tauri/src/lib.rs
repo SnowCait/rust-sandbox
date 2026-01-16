@@ -1,3 +1,5 @@
+use keyring::Entry;
+use nostr_sdk::Keys;
 use tauri::{
     menu::{Menu, MenuItem},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
@@ -8,6 +10,16 @@ use tauri::{
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
+}
+
+#[tauri::command]
+fn save_nsec(nsec: &str) -> Result<(), String> {
+    let keys = Keys::parse(nsec).map_err(|e| format!("Failed to parse secret key: {}", e))?;
+    Entry::new("tauri-app", &keys.public_key().to_string())
+        .map_err(|e| format!("Failed to create keyring entry: {}", e))?
+        .set_password(nsec)
+        .map_err(|e| format!("Failed to save secret key: {}", e))?;
+    Ok(())
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -46,7 +58,7 @@ pub fn run() {
             Ok(())
         })
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![greet, save_nsec])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
