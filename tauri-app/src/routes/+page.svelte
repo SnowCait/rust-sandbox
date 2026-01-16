@@ -1,11 +1,17 @@
 <script lang="ts">
   import { invoke } from "@tauri-apps/api/core";
+  import { init } from "nostr-login";
+  import { onMount } from "svelte";
 
   let name = $state("");
   let greetMsg = $state("");
 
   let nsec = $state("");
   let saveMsg = $state("");
+
+  onMount(() => {
+    init({});
+  });
 
   async function greet(event: Event) {
     event.preventDefault();
